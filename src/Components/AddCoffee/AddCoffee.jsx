@@ -1,11 +1,54 @@
 import React from "react";
 import { Form } from "react-router-dom";
+import Swal from 'sweetalert2'
 
 const AddCoffee = () => {
+  const handleAddCoffee = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const name = form.coffeeName.value;
+    const quantity = form.quantity.value;
+    const supplier = form.supplier.value;
+    const taste = form.taste.value;
+    const details = form.details.value;
+    const category = form.category.value;
+    const PhotoUrl = form.PhotoUrl.value;
+
+    const newCoffee = {
+      name,
+      quantity,
+      supplier,
+      taste,
+      details,
+      category,
+      PhotoUrl,
+    };
+    console.log(newCoffee);
+    // send data to the server
+    fetch("http://localhost:5000/coffee", {
+        method: 'Post',
+        headers: {
+            'content-type':'application/json'
+        },
+        body: JSON.stringify(newCoffee)
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if(data.insertedId){
+            Swal.fire({
+                title: 'Success!',
+                text: 'Coffee Added Suceessfully',
+                icon: 'success',
+                confirmButtonText: 'Cool'
+              })
+        }
+      });
+  };
   return (
     <div>
       <h1 className="text-3xl font-extrabold">add AddCoffee</h1>
-      <Form>
+      <Form onSubmit={handleAddCoffee}>
         {/* form name and quantity row */}
         <div className="md:flex gap-8">
           <div className="form-control md:w-1/2">
@@ -87,14 +130,14 @@ const AddCoffee = () => {
           </div>
           <div className="form-control md:w-1/2">
             <label className="label">
-              <span className="label-text">Taste</span>
+              <span className="label-text">Details</span>
             </label>
             <label className="input-group">
-              <span>Taste</span>
+              <span>Details</span>
               <input
                 type="text"
-                name="taste"
-                placeholder="taste"
+                name="details"
+                placeholder="Details"
                 className="input input-bordered w-full"
               />
             </label>
@@ -102,7 +145,7 @@ const AddCoffee = () => {
         </div>
 
         {/* form photo url row */}
-        <div className="gap-8">          
+        <div className="gap-8">
           <div className="form-control w-full">
             <label className="label">
               <span className="label-text">Photo url</span>
@@ -118,7 +161,12 @@ const AddCoffee = () => {
             </label>
           </div>
         </div>
-        <button className="btn w-full mt-10">Add coffee</button>
+        <button className="btn btb"></button>
+        <input
+          type="submit"
+          className="btn btn-block mt-10"
+          value="add coffee"
+        />
       </Form>
     </div>
   );
